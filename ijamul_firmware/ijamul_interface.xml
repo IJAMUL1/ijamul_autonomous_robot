@@ -1,0 +1,10 @@
+<library path="ijamul_firmware">
+    <class name="ijamul_firmware/ijamulInterface"
+      type="ijamul_firmware::ijamulInterface"
+      base_class_type="hardware_interface::SystemInterface"
+    >
+      <description>
+        ijamul Hardware Interface
+      </description>
+    </class>
+  </library>
