@@ -55,12 +55,21 @@ def generate_launch_description():
                         output="screen"
     )
 
+    rviz_node = Node(
+        package="rviz2",
+        executable="rviz2",
+        name="rviz2",
+        output="screen",
+        arguments=["-d", os.path.join(ijamul_description, "rviz", "display.rviz")],
+    )
+
     return LaunchDescription([
         env_var,
         model_arg,
         start_gazebo_server,
         start_gazebo_client,
         robot_state_publisher_node,
-        spawn_robot
+        spawn_robot,
+        rviz_node
     ])
 
