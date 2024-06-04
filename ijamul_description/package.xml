@@ -4,7 +4,7 @@
   <name>ijamul_description</name>
   <version>0.0.0</version>
   <description>ijamul description package</description>
-  <maintainer email="ifedayoolusanya@gmail.com">Antonio Brandi</maintainer>
+  <maintainer email="ifedayoolusanya@gmail.com">Ifedayo Olusanya</maintainer>
   <license>Apache 2.0</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>

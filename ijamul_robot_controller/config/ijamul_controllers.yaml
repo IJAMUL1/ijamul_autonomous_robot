@@ -79,5 +79,6 @@ ijamul_controller:
 simple_velocity_controller:
   ros__parameters:
     joints:
-      - wheel_left_joint
       - wheel_right_joint
+      - wheel_left_joint
+      
