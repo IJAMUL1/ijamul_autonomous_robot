@@ -12,7 +12,7 @@ class SimpleSerialReceiver(Node):
         self.get_logger().info("Initializing Simple Serial Reciever")
 
 
-        self.declare_parameter("port", "/dev/ttyUSB0")
+        self.declare_parameter("port", "/dev/serial/by-id/usb-1a86_USB_Serial-if00-port0")
         self.declare_parameter("baudrate", 115200)
 
         self.port_ = self.get_parameter("port").value

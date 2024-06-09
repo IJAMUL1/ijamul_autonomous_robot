@@ -1,1 +1,5 @@
 source /opt/ros/humble/setup.bash
+
+source /ijamul_ws/src/rplidar_ros/scripts/create_udev_rules.sh
+
+source /ijamul_ws/install/setup.bash

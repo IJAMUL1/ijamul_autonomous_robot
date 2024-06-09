@@ -10,10 +10,10 @@ from launch_ros.parameter_descriptions import ParameterValue
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 
 def generate_launch_description():
-    ijamul = get_package_share_directory("ijamul_description")
-    # gazebo_ros = get_package_share_directory("gazebo_ros")
+    ijamul_description = get_package_share_directory("ijamul_description")
+    ijamul_navigation = get_package_share_directory("ijamul_navigation")
     model_arg = DeclareLaunchArgument(name="model", default_value=os.path.join(
-                                        ijamul, "urdf", "ijamul.urdf.xacro"
+                                        ijamul_description, "urdf", "ijamul.urdf.xacro"
                                         ),
                                       description="Absolute path to robot urdf file")
 
@@ -26,54 +26,33 @@ def generate_launch_description():
         parameters=[{"robot_description": robot_description}]
     )
 
-    joint_state_publisher_gui_node = Node(
-        package="joint_state_publisher_gui",
-        executable="joint_state_publisher_gui"
-    )
-
     rviz_node = Node(
         package="rviz2",
         executable="rviz2",
         name="rviz2",
         output="screen",
-        arguments=["-d", os.path.join(ijamul, "rviz", "display.rviz")],
+        arguments=["-d", os.path.join(ijamul_navigation, "rviz", "ijamul_slam.rviz")],
     )
 
-    spawn_robot = Node(
-        package="gazebo_ros",
-        executable="spawn_entity.py",
-        arguments=["-entity", "ijamul", "-topic", "robot_description"],
-        output="screen"
+       # SLAM Toolbox node
+    slam_toolbox_node = Node(
+        package="slam_toolbox",
+        executable="sync_slam_toolbox_node",
+        name="slam_toolbox",
+        output="screen",
+        parameters=[os.path.join(ijamul_navigation, 'config', 'slam.yaml')],
+        remappings=[
+            ('/scan', '/scan'),
+            ('/tf', 'tf'),
+            ('/tf_static', 'tf_static'),
+            ('/odom', '/odometry/filtered')
+        ]
     )
 
-
-    # # Path to the rplidar_ros package
-    # rplidar_ros_package_dir = get_package_share_directory('rplidar_ros')
-
-    # # Include the RPLidar A1 view launch file
-    # view_rplidar_launch = IncludeLaunchDescription(
-    #     PythonLaunchDescriptionSource(os.path.join(rplidar_ros_package_dir, 'launch', 'view_rplidar_a1_launch.py'))
-    # )
-
-    # start_gazebo_server = IncludeLaunchDescription(
-    #     PythonLaunchDescriptionSource([os.path.join(gazebo_ros, "launch", "gzserver.launch.py")])
-    # )
-
-    # start_gazebo_client = IncludeLaunchDescription(
-    #     PythonLaunchDescriptionSource([os.path.join(gazebo_ros, "launch", "gzclient.launch.py")])
-    # )
-
-
-    
 
 
     return LaunchDescription([
         model_arg,
-        # start_gazebo_server,
-        # start_gazebo_client,
-        # rplidar_node,
-        spawn_robot,
         robot_state_publisher_node,
-        joint_state_publisher_gui_node,
-        # rviz_node
+        slam_toolbox_node
     ])

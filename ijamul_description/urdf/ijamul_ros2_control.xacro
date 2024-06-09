@@ -14,7 +14,7 @@
         <xacro:unless value="$(arg is_sim)">
         <hardware>
             <plugin>ijamul_firmware/ijamulInterface</plugin>
-            <param name="port">/dev/ttyUSB0</param>
+            <param name="port">/dev/serial/by-id/usb-1a86_USB_Serial-if00-port0</param>
         </hardware>
         </xacro:unless>
         
