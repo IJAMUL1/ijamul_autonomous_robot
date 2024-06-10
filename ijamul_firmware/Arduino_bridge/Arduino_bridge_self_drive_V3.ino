@@ -48,9 +48,9 @@ double left_wheel_cmd = 0.0;              // 0-255
 double Kp_r = 7;
 double Ki_r = 3;
 double Kd_r = 0.1;
-double Kp_l = 6.7;
-double Ki_l = 2.5;
-double Kd_l = 0.25;
+double Kp_l = 8;
+double Ki_l = 3;
+double Kd_l = 0.1;
 // Controller
 PID rightMotor(&right_wheel_meas_vel, &right_wheel_cmd, &right_wheel_cmd_vel, Kp_r, Ki_r, Kd_r, DIRECT);
 PID leftMotor(&left_wheel_meas_vel, &left_wheel_cmd, &left_wheel_cmd_vel, Kp_l, Ki_l, Kd_l, DIRECT);

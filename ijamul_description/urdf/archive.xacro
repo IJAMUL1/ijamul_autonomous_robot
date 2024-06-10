@@ -1,0 +1,161 @@
+<?xml version="1.0"?>
+
+<robot name="ijamul" xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <!-- Load Simulated or Real Hardware Interfaces -->
+  <xacro:arg name="is_sim" default="true"/>
+  
+  <!-- Include Gazebo Parameters -->
+  <xacro:include filename="$(find ijamul_description)/urdf/ijamul_gazebo.xacro" />
+
+
+
+  <!-- Include ros2_control Plugins -->
+  <xacro:include filename="$(find ijamul_description)/urdf/ijamul_ros2_control.xacro" />
+  <xacro:include filename="$(find ijamul_description)/urdf/inertial_macros.xacro"/>
+
+  <!-- Include Gazebo Parameters -->
+  <xacro:include filename="$(find ijamul_description)/urdf/imu.urdf.xacro" />
+
+  <!-- Include Gazebo Parameters -->
+  <xacro:include filename="$(find ijamul_description)/urdf/generic_laser.urdf.xacro" />
+  
+  <xacro:property name="caster_wheel_radius" value="0.03"/>
+  <xacro:property name="caster_wheel_mass" value="0.01"/>
+
+  <material name="white">
+        <color rgba="1 1 1 1" />
+  </material>
+
+  <material name="black">
+        <color rgba="0 0 0 1" />
+  </material>
+
+  <material name="blue">
+        <color rgba="0.2 0.2 1 1"/>
+  </material>
+
+  <link name="base_footprint"/>
+  
+  <link name="base_link">
+    <inertial>
+      <origin xyz="0 0 0.03" rpy="0.0 0.25 0.3" />
+      <mass value="8.2573504e-01"/>
+      <inertia ixx="2.2124416e-02" ixy="-1.2294101e-04" ixz="3.4938785e-04"
+               iyy="2.1193702e-02" iyz="-5.0120904e-05"
+               izz="2.0064271e-02" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <box size="0.219 0.214 0.06"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <box size="0.219 0.214 0.06"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="base_joint" type="fixed">
+    <parent link="base_footprint"/>
+    <child link="base_link" />
+    <origin xyz="0 0 0.007" rpy="0 0 0"/>
+  </joint>
+
+  <link name="wheel_right_link">
+    <inertial>
+      <origin xyz="0 0.014 0" rpy="0 0 0" />
+      <mass value="0.0530086090966721" />
+      <inertia ixx="1.88176298336665E-05" ixy="-4.8444933029987E-10" ixz="1.88163708851143E-08"
+               iyy="3.11510738647764E-05" iyz="-6.93560663069607E-11"
+               izz="1.8801969558182E-05" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0.01464 0" rpy="1.57 0 0" />
+      <geometry>
+        <mesh filename="package://ijamul_description/meshes/wheel_right_link.STL" />
+      </geometry>
+      <material name="blue"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0.01464 0" rpy="1.57 0 0" />
+      <geometry>
+        <sphere radius="0.033"/>
+      </geometry>
+    </collision>
+  </link>
+
+   <joint name="wheel_right_joint" type="continuous"> 
+    <origin xyz="0.0312 -0.09764 -0.003" rpy="0 0 0" />
+    <parent link="base_link" />
+    <child link="wheel_right_link" />
+    <axis xyz="0 1 0" />
+  </joint>
+
+  <link
+    name="wheel_left_link">
+    <inertial>
+      <origin xyz="0 0.014 0" rpy="0 0 0" />
+      <mass value="0.0530086043217644" />
+      <inertia ixx="1.8792911368909E-05"  ixy="3.31256392204584E-10" ixz="-1.14082001662767E-08"
+               iyy="3.11510738759073E-05" iyz="-3.60499245082192E-10"
+               izz="1.88266886146847E-05" />
+    </inertial>
+    <visual>
+      <origin xyz="0 -0.014 0" rpy="-1.57 0 0" />
+      <geometry>
+        <mesh filename="package://ijamul_description/meshes/wheel_left_link.STL" />
+      </geometry>
+      <material name="blue"/>
+    </visual>
+    <collision>
+      <origin xyz="0 -0.014 0" rpy="-1.57 0 0" />
+      <geometry>
+        <sphere radius="0.033"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="wheel_left_joint" type="continuous">
+    <origin xyz="0.0312 0.09764 -0.003" rpy="0 0 0" />
+    <parent link="base_link" />
+    <child link="wheel_left_link" />
+    <axis xyz="0 1 0" />
+  </joint>
+
+
+  <link name="caster_front_link">
+    <xacro:inertial_sphere mass="${caster_wheel_mass}" radius="${caster_wheel_radius}">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+    </xacro:inertial_sphere>
+    <visual>
+      <geometry>
+        <sphere radius="${caster_wheel_radius}"/>
+      </geometry>
+      <material name="white"/>
+    </visual>
+    <collision>
+      <geometry>
+        <sphere radius="${caster_wheel_radius}"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="caster_front_joint" type="fixed">
+    <origin xyz="-0.0859 0 -0.008" rpy="0 0 0" />
+    <parent link="base_link" />
+    <child link="caster_front_link" />
+    <axis xyz="0 0 0" />
+  </joint>
+
+  <xacro:imu/>
+  
+  <xacro:generic_laser>
+    <origin xyz="0.06 0 0.05" rpy="0 0 0"/>
+  </xacro:generic_laser>
+
+</robot>

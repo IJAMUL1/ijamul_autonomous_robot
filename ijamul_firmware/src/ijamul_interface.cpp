@@ -5,7 +5,7 @@
 
 namespace ijamul_firmware
 {
-ijamulInterface::ijamulInterface()
+ijamulInterface::ijamulInterface():last_time_(std::chrono::steady_clock::now())
 {
 }
 
@@ -134,31 +134,38 @@ CallbackReturn ijamulInterface::on_deactivate(const rclcpp_lifecycle::State &)
 }
 
 
-hardware_interface::return_type ijamulInterface::read(const rclcpp::Time &,
-                                                          const rclcpp::Duration &)
+
+hardware_interface::return_type ijamulInterface::read(const rclcpp::Time &, const rclcpp::Duration &)
 {
-  // Interpret the string
-  if(arduino_.IsDataAvailable())
+  auto current_time = std::chrono::steady_clock::now();
+  std::chrono::duration<double> elapsed_seconds = current_time - last_time_;
+  double dt = elapsed_seconds.count();
+
+  if (arduino_.IsDataAvailable())
   {
     std::string message;
     arduino_.ReadLine(message);
     std::stringstream ss(message);
     std::string res;
     int multiplier = 1;
-    while(std::getline(ss, res, ','))
+    while (std::getline(ss, res, ','))
     {
       multiplier = res.at(1) == 'p' ? 1 : -1;
 
-      if(res.at(0) == 'r')
+      if (res.at(0) == 'r')
       {
         velocity_states_.at(0) = multiplier * std::stod(res.substr(2, res.size()));
+        position_states_.at(0) += velocity_states_.at(0) * dt;
       }
-      else if(res.at(0) == 'l')
+      else if (res.at(0) == 'l')
       {
         velocity_states_.at(1) = multiplier * std::stod(res.substr(2, res.size()));
+        position_states_.at(1) += velocity_states_.at(1) * dt;
       }
     }
   }
+
+  last_time_ = current_time;
   return hardware_interface::return_type::OK;
 }
 

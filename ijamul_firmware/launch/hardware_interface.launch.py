@@ -1,6 +1,6 @@
 import os
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument
+from launch.actions import DeclareLaunchArgument, TimerAction
 from launch_ros.actions import Node
 from launch_ros.parameter_descriptions import ParameterValue
 from launch.substitutions import Command, LaunchConfiguration
@@ -44,9 +44,12 @@ def generate_launch_description():
         ],
     )
 
+    delayed_controller_manager = TimerAction(period=3.0, actions=[controller_manager])
+
     return LaunchDescription(
         [
             robot_state_publisher_node,
             controller_manager,
+            delayed_controller_manager,
         ]
     )

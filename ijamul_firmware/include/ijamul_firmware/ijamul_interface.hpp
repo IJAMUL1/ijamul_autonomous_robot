@@ -1,19 +1,18 @@
-#ifndef ijamul_INTERFACE_HPP
-#define ijamul_INTERFACE_HPP
+#ifndef IJAMUL_INTERFACE_HPP
+#define IJAMUL_INTERFACE_HPP
 
 #include <rclcpp/rclcpp.hpp>
 #include <hardware_interface/system_interface.hpp>
 #include <libserial/SerialPort.h>
 #include <rclcpp_lifecycle/state.hpp>
 #include <rclcpp_lifecycle/node_interfaces/lifecycle_node_interface.hpp>
-
+#include <pluginlib/class_list_macros.hpp>
 #include <vector>
 #include <string>
-
+#include <chrono>
 
 namespace ijamul_firmware
 {
-
 using CallbackReturn = rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn;
 
 class ijamulInterface : public hardware_interface::SystemInterface
@@ -39,8 +38,8 @@ private:
   std::vector<double> velocity_commands_;
   std::vector<double> position_states_;
   std::vector<double> velocity_states_;
+  std::chrono::steady_clock::time_point last_time_;
 };
-}  // namespace bumperbot_firmware
+}  // namespace ijamul_firmware
 
-
-#endif  // BUMPERBOT_INTERFACE_HPP
+#endif  // IJAMUL_INTERFACE_HPP
