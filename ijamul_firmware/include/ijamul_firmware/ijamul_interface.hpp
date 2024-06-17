@@ -9,7 +9,7 @@
 #include <pluginlib/class_list_macros.hpp>
 #include <vector>
 #include <string>
-#include <chrono>
+// #include <chrono>
 
 namespace ijamul_firmware
 {
@@ -38,8 +38,8 @@ private:
   std::vector<double> velocity_commands_;
   std::vector<double> position_states_;
   std::vector<double> velocity_states_;
-  std::chrono::steady_clock::time_point last_time_;
-};
+  
+  };
 }  // namespace ijamul_firmware
 
 #endif  // IJAMUL_INTERFACE_HPP

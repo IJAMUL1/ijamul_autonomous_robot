@@ -11,7 +11,7 @@ from launch.event_handlers import OnProcessStart
 
 def generate_launch_description():
     ijamul_description = get_package_share_directory("ijamul_description")
-    # ijamul_navigation = get_package_share_directory("ijamul_navigation")
+    ijamul_navigation = get_package_share_directory("ijamul_navigation")
 
     robot_description = ParameterValue(
         Command(
@@ -92,47 +92,14 @@ def generate_launch_description():
         arguments=["-d", os.path.join(ijamul_description, "rviz", "display.rviz")],
     )
 
-
-    
-
-    
-    return LaunchDescription([
-        
-        robot_state_publisher_node,
-        delayed_controller_manager,
-        delayed_diff_drive_spawner,
-        delayed_joint_broad_spawner,
-        rviz_node,
-
-
-
-
-
-
-
-
-
-        # model_arg,
-
-        # robot_localization,  # Uncomment if you want to use robot_localization
-        # mpu6050driver,
-        # rplidar_a1,
-        # slam_toolbox_node
-        # throttle_scan_node,
-        
-    ])
-
-
-
-
-# robot_localization = Node(
+    # robot_localization = Node(
     #     package="robot_localization",
     #     executable="ekf_node",
     #     name="ekf_filter_node",
     #     output="screen",
     #     parameters=[os.path.join(get_package_share_directory("ijamul_localization"), "config", "ekf.yaml")],
     # )
-    
+
     # mpu6050driver = IncludeLaunchDescription(
     #     PythonLaunchDescriptionSource(
     #         os.path.join(
@@ -146,15 +113,15 @@ def generate_launch_description():
     #     }.items()
     # )
 
-    # rplidar_a1 = IncludeLaunchDescription(
-    #     PythonLaunchDescriptionSource(
-    #         os.path.join(
-    #             get_package_share_directory("rplidar_ros"),
-    #             "launch",
-    #             "rplidar_a1_launch.py"
-    #         )
-    #     ),
-    # )
+    rplidar_a1 = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            os.path.join(
+                get_package_share_directory("rplidar_ros"),
+                "launch",
+                "rplidar_a1_launch.py"
+            )
+        ),
+    )
 
     # # SLAM Toolbox node
     # slam_toolbox_node = Node(
@@ -167,18 +134,20 @@ def generate_launch_description():
     #         ('/scan', '/scan'),
     #         ('/tf', 'tf'),
     #         ('/tf_static', 'tf_static'),
-    #         ('/odom', '/odometry/filtered')
+    #         ('/odom', '/ijamul_controller/odom')
     #     ]
     # )
 
-
-    # # Throttle node
-    # throttle_scan_node = Node(
-    #     package="topic_tools",
-    #     executable="throttle",
-    #     name="throttle_scan",
-    #     arguments=["messages", "/scan", "2"],
-    #     remappings=[
-    #         ('/scan', '/scan_throttled')
-    #     ]
-    # )
+    return LaunchDescription([
+        
+        robot_state_publisher_node,
+        delayed_controller_manager,
+        delayed_diff_drive_spawner,
+        delayed_joint_broad_spawner,
+        # rviz_node,
+        # model_arg,
+        # robot_localization,  # Uncomment if you want to use robot_localization
+        # mpu6050driver,
+        rplidar_a1,
+        # slam_toolbox_node        
+    ])

@@ -5,7 +5,7 @@
 
 namespace ijamul_firmware
 {
-ijamulInterface::ijamulInterface():last_time_(std::chrono::steady_clock::now())
+ijamulInterface::ijamulInterface()
 {
 }
 
@@ -137,9 +137,6 @@ CallbackReturn ijamulInterface::on_deactivate(const rclcpp_lifecycle::State &)
 
 hardware_interface::return_type ijamulInterface::read(const rclcpp::Time &, const rclcpp::Duration &)
 {
-  auto current_time = std::chrono::steady_clock::now();
-  std::chrono::duration<double> elapsed_seconds = current_time - last_time_;
-  double dt = elapsed_seconds.count();
 
   if (arduino_.IsDataAvailable())
   {
@@ -155,17 +152,15 @@ hardware_interface::return_type ijamulInterface::read(const rclcpp::Time &, cons
       if (res.at(0) == 'r')
       {
         velocity_states_.at(0) = multiplier * std::stod(res.substr(2, res.size()));
-        position_states_.at(0) += velocity_states_.at(0) * dt;
       }
       else if (res.at(0) == 'l')
       {
         velocity_states_.at(1) = multiplier * std::stod(res.substr(2, res.size()));
-        position_states_.at(1) += velocity_states_.at(1) * dt;
       }
     }
+    RCLCPP_INFO(rclcpp::get_logger("ijamulInterface"),  "right wheel velocity received: %f  left_wheel_velocity received: %f", std::abs(velocity_states_.at(0)), std::abs(velocity_states_.at(1)));
   }
 
-  last_time_ = current_time;
   return hardware_interface::return_type::OK;
 }
 
@@ -199,10 +194,6 @@ hardware_interface::return_type ijamulInterface::write(const rclcpp::Time &,
   message_stream << std::fixed << std::setprecision(2) << 
     "r" << right_wheel_sign << compensate_zeros_right << std::abs(velocity_commands_.at(0)) << 
     ",l" <<  left_wheel_sign << compensate_zeros_left << std::abs(velocity_commands_.at(1)) << ",";
-
-  // // Print the message to the terminal for debugging
-  // std::string message_to_send = message_stream.str();
-  // std::cout << "Sending message to Arduino: " << message_to_send << std::endl;
 
   RCLCPP_INFO(rclcpp::get_logger("ijamulInterface"),  "right wheel velocity: %f  left_wheel_velocity: %f", std::abs(velocity_commands_.at(0)), std::abs(velocity_commands_.at(1)));
 
